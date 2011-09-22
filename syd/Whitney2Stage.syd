@@ -1,0 +1,31 @@
+MODS 5
+MOD mOut1 out (676 116 708 148)
+IN mRscore4 -> sig
+OUTPUT 180 44100 2 0 0 WhitneyOutput.wav
+MOD mOsc2 osc (96 120 128 152)
+OSCI 1
+OSCF p5
+OSCA linenr(t,.1,p3-.1,.01)*.05
+OSCP 0
+MOD mRscore3 rscore (199 120 231 152)
+IN mButter5 -> i1
+RSCO 5
+RSCON p4
+RSCO1 1
+RSCO2 i*p3/p4
+RSCO3 cond(p3/p4 > 5, 5,p3/p4)
+RSCO4 p4
+RSCO5 55*2^(p4/12)
+MOD mRscore4 rscore (270 122 302 154)
+IN mRscore3 -> i1
+RSCO 4
+RSCON 48
+RSCO1 1
+RSCO2 0
+RSCO3 p3
+RSCO4 i+1
+MOD mButter5 butter (148 120 180 152)
+IN mOsc2 -> sig
+BUTTER 0
+BUTTERF p5*2^(4*(1-t/p3))
+BUTTERB p5*2
