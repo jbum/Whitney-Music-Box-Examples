@@ -1,16 +1,28 @@
-This is a collection of examples of Whitney Music Boxes.  The animation used in these examples
-was developed and popularized by John Whitney, who described it in his book "Digital Harmony".
-This book contained example code in the BASIC programming language, written by Paul Rother.
+This is a collection of examples of Whitney Music Boxes.  Some of them are purely visual 
+representations of Whitney's "Incremental Drift" concept.  Some use the visual to trigger sounds, and
+some produce sound or sound files, only.
 
-The idea of using these animations to trigger closely related musical sounds, in the style of
-a music box, was developed by Jim Bumgardner.
+The motion graphics used in these examples was developed and popularized by John Whitney (Sr), who 
+described it in his 1980 book "Digital Harmony". Whitney's book contained example code in the BASIC 
+programming language, written by Paul Rother.
+
+Amazon has a listing for this book here: 
+
+http://www.amazon.com/Digital-Harmony-Complementarity-Music-Visual/dp/007070015X
+
+The "Whitney Music Box", in which the spiral form of this animation is used to trigger closely 
+related musical sounds was created by Jim Bumgardner in 2006. Jim's first blog article can be found here: 
+
+http://www.krazydad.com/blog/2006/04/visual-harmony/
 
 The processing/digital_harmony_examples directory contains ports of the sample code from
 the book.  The programs have ported in a fairly straightforward manner from BASIC to
 Processing.
 
 basic/
-  This directory contains the original BASIC examples by Paul Rother.
+  This directory contains the original BASIC examples by Paul Rother.  The program "Column C" is
+  the basis for the animation in the Whitney Music Box.
+
   (still need to dig these up... - jbum)
   
 chuck/
