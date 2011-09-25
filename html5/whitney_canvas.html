@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Whitney Music Box in HTML5/Canvas</title>
+<description>Whitney Music Box animation in HTML5/Canvas, Example code by Jim Bumgardner</description>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+<script>
+
+var dc;
+var nbrPoints = 48;
+var cycleLength = 60*3; // 3 minutes
+
+var gw = 800;
+var gh = 800;
+var cx = gw/2;
+var cy = gh/2;
+var circleRadius = (gw/2) * 0.95;
+
+var startTime = (new Date()).getTime();	
+var PI = 3.1415927;
+var PI2 = PI*2;
+var tines = [];
+var lastSound = [];
+
+RefreshFrame = function()
+{
+  dc.clearRect(0,0,gw,gh);
+  dc.lineWidth = 3;
+  dc.strokeStyle = '#333';
+  dc.beginPath();
+  dc.moveTo(cx,cy);
+  dc.lineTo(gw, cy);
+  dc.stroke();
+
+  var speed = (2*PI*nbrPoints) / cycleLength;
+  var ms =  (new Date()).getTime();	
+  var timer = (ms-startTime)*.001*speed;
+  var maxRad = (gw/2 - circleRadius)*.75;
+  var minRad = maxRad * .2;
+  for (var i = 0; i < nbrPoints; ++i) {
+      var r = (i+1)/nbrPoints;
+      var a = timer * r;
+      var len = circleRadius * (1 + 1.0 /nbrPoints - r);
+      if (Math.floor(a/PI2) != Math.floor(tines[i]/PI2)) {
+        lastSound[i] = ms;
+      }
+      var x = (cx + Math.cos(a)*len);
+      var y = (cy + Math.sin(a)*len);
+      
+      var radv = minRad + (maxRad-minRad)*(1-r); // (gw/2 - circleRadus)-r*16;
+      radv = Math.max( (radv+6)-6*(ms-lastSound[i])/500.0 , radv);
+  
+      var huev = r*360;
+      var satv = Math.round(100*Math.min(1, (ms-lastSound[i])/1000.0));
+      var lumv = Math.round(100*Math.max(0.5, 1-(ms-lastSound[i])/1000.0));
+
+      dc.fillStyle = 'hsla(' + huev + ',' + satv + '%,' + lumv + '%,1)';
+      dc.beginPath();
+      dc.arc(x,y,radv,0,PI2,false);
+      dc.fill();
+      tines[i] = a;
+  }
+}
+
+$(document).ready(function(){
+  
+	$('#mycanvas').css('width',gw);
+	$('#mycanvas').css('height',gw);
+	var drawingcanvas = document.getElementById('mycanvas');
+	drawingcanvas.width = gw;
+	drawingcanvas.height = gh;
+	dc = drawingcanvas.getContext('2d');
+
+  for (var i = 0; i < nbrPoints; ++i) {
+    lastSound[i] = 0;
+    tines[i] = 0;
+  }
+
+  startTime = (new Date()).getTime();	
+  setInterval(RefreshFrame, 1000/24);
+  
+});
+
+</script>
+<style>
+body { background-color: #000; }
+</style>
+</head>
+<body>
+<canvas id="mycanvas" />
+</body>
+</html>
