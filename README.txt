@@ -51,10 +51,13 @@ processing/
     Ports of Paul Rother's original sample code from the book.
 
   plus_midi
-    Versions which trigger MIDI instruments.
+    Versions which trigger MIDI instruments (both rwmidi and midibus libaries)
 
   plus_pd
     Versions which talk to PD (puredata) and response to OSC.
+
+  plus_pd
+    Versions which use the BEADS library
 
   visuals_only
     Versions which generate visuals only.
