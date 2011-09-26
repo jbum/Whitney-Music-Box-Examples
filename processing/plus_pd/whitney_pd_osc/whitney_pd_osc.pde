@@ -2,11 +2,12 @@
 //
 // Processing+PD implementation jbum 9/9/2012
 //
+// Version 1.3 9-25-2011 OSC Support, reworked how motion is tracked.
 // Version 1.2 9-12-2011 Improved voice design and message passing.
 // Version 1.1 9-10-2011 Simplified Organ implementation.  Voices can be increased using makeorgan.pl
 //
 //
-// Many thanks to Peter Kirn!
+// Many thanks to Peter Kirn for introducing me to pdlib.
 
 
 import oscP5.*;
@@ -21,6 +22,7 @@ NetAddress myRemoteLocation;
 int  maxPoints = 512;
 int   nbrPoints = 88;         // Number of notes - current patch has 16 voice polyphony
 float cycleLength = 3 * 60;   // Length of the full cycle in seconds
+
 float durRange = cycleLength*1000/nbrPoints;        // Duration range
 float minDur = durRange/2;    // Minimum duration
 float baseFreq = 30;          // Minimum frequency
@@ -34,8 +36,13 @@ float[] tines;        // keeps track of current position of note, by angle
 long[] lastSound;     // keeps track of time last note sounded
 boolean isMute = false;
 
-long startMS;
+long lastMS;
 
+
+float gA;     // position of slowest dot, in radians
+float gSpeed; // velocity of slowest dot, in radians per millisecond
+float maxSpeed = 2*PI/((.5*60)*1000);
+float minSpeed = -maxSpeed;
 
 void setup() {
   size(kWidth,kHeight);
@@ -45,15 +52,20 @@ void setup() {
   colorMode(HSB,1);
   background(0);
 
+  gA = 0;
+  gSpeed = 2*PI/(cycleLength*1000);
+
   // PDlib setup
   pd = new PureDataP5Jack(this, 1, 2, "system", "system");
   pd.openPatch(dataFile("organplayerbells.pd"));
   pd.start();
   pd.sendFloat("amp", 0);
+
  
   // OSC setup
   oscP5 = new OscP5(this,8000);
-  myRemoteLocation = new NetAddress("127.0.0.1",12000);
+  myRemoteLocation = new NetAddress("192.168.2.3",9000);
+
   oscP5.plug(this,"fader1","/1/fader1","f");
   oscP5.plug(this,"fader2","/1/fader2","f");
   oscP5.plug(this,"fader3","/1/fader3","f");
@@ -65,7 +77,11 @@ void setup() {
   oscP5.plug(this,"fader1","/slider1","f");
   oscP5.plug(this,"fader2","/slider2","f");
   oscP5.plug(this,"mlr","/mlr/press","iii");
-
+  
+  // Produce correct slider values...
+  sendFader(1, (gSpeed-minSpeed)/(maxSpeed-minSpeed));
+  sendFader(2, sqrt((nbrPoints-8.0)/(maxPoints-8.0)));
+  sendFader(3, sqrt((baseFreq-20)/(440*4)));
 
   tines = new float[maxPoints];
   lastSound = new long[maxPoints];
@@ -74,7 +90,32 @@ void setup() {
     tines[i] = -10;
     lastSound[i] = millis();
   }
-  startMS = millis();
+  lastMS = millis();
+
+}
+
+// Not yet working on monome emulation.
+public void sendMlr(int x,int y, int v)
+{
+  OscMessage myMessage = new OscMessage("/mlr/press");
+  myMessage.add(x);
+  myMessage.add(y);
+  myMessage.add(v);
+  oscP5.send(myMessage, myRemoteLocation); 
+}
+
+public void sendFader(int fidx, float v)
+{
+  /* TouchOsc */
+  OscMessage myMessage = new OscMessage("/1/fader" + fidx);
+  myMessage.add(v);
+  oscP5.send(myMessage, myRemoteLocation); 
+
+  /* Monome */
+/*  myMessage = new OscMessage("/slider" + fidx);
+  myMessage.add(v);
+  oscP5.send(myMessage, myRemoteLocation); 
+*/
 }
 
 public void test(int a, int b) {
@@ -83,19 +124,8 @@ public void test(int a, int b) {
 
 public void fader1(float a) {
   println("### fader1 (speed): " + a);
-  long cMillis = millis();
-  long elapsed = cMillis - startMS;
-  float phase = elapsed*.001/cycleLength;
-  float a1 = 1-a;
 
-//  float minSpeed = (2*PI*nbrPoints) / 10;
-//  float maxSpeed = (2*PI*nbrPoints) / 10;
-//  float speed = minSpeed+a*(maxSpeed-minSpeed);
-  cycleLength = 10 + 20*60*a1*a1;
-  // float speed = (2*PI*nbrPoints) / cycleLength;
-  // cycleLength = 60*60*a1*a1;
-  // Insure phase stays the same...
-  startMS = round(-((phase*cycleLength)/.001 - cMillis));
+  gSpeed = map(a, 0, 1, minSpeed, maxSpeed);
 }
 
 public void fader2(float a) {
@@ -152,11 +182,11 @@ void draw()
 
   float mx = mouseX/(float)width;
   float my = mouseY/(float)height;
-  float speed = (2*PI*nbrPoints) / cycleLength;
 
   long cMillis = millis();
-  long elapsed = cMillis - startMS;
-  float timer = elapsed*.001*speed;
+  long elapsed = cMillis - lastMS;
+
+  gA += gSpeed*elapsed;
 
   float pi2 = 2*PI;
   noStroke();
@@ -167,7 +197,8 @@ void draw()
   {
     float r = (i+1)/(float)nbrPoints;
 
-    float a = timer * r;
+    float a = gA * (i+1);
+
     float len = circleRadius * (1 + 1.0 /nbrPoints - r);
 
     if ((int) (a/pi2) != (int) (tines[i]/pi2))
@@ -179,6 +210,7 @@ void draw()
         // pd.sendList("tinehit", i, baseFreq*(pow(2,i/12.0)),  minDur+durRange - i*durIncrement);
         // Harmonic Mapping
         pd.sendList("tinehit", i, baseFreq+i*baseFreq,  minDur+durRange - i*durIncrement);
+        sendMlr(i % 8, i/8, 1);
       }
       lastSound[i] = millis();
     }
@@ -200,8 +232,7 @@ void draw()
 
     tines[i] = a;
   }
-  timer -= speed;
-
+  lastMS = cMillis;
 }
 
 
