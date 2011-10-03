@@ -20,10 +20,8 @@ the book.  The programs have ported in a fairly straightforward manner from BASI
 Processing.
 
 basic/
-  This directory contains the original BASIC examples by Paul Rother.  The program "Column C" is
-  the basis for the animation in the Whitney Music Box.
-
-  (still need to dig these up... - jbum)
+  This directory contains the original BASIC examples by Paul Rother, intended for the Apple II.  
+  The program "Column BC" is the basis for the animation in the Whitney Music Box.
   
 chuck/
   Sample ChucK version.
