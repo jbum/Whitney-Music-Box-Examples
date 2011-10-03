@@ -1,0 +1,52 @@
+  PROGRAM COLUMNA;
+{ FIGURE (1) COLUMNS B & C - DIFFERENTIAL POINTS ON A POLAR COORDINATED FIELD }
+{ COPYRIGHT 5/25/80 BY JOHN WHITNEY - PREPARED BY PAUL ROTHER }
+{ ADAPTED FOR APPLE - II }
+{ TRANSCRIBED FROM THE PRINTED EDITION BY JIM BUMGARDNER 10/2/2011 }
+
+CONST DEG=0.0174533;            { CONVERTS DEGREE TO RADIAN }
+
+VAR TIME,STEP,
+    STEPSTART,STEPEND,
+    A,X,Y,
+    RADIUS,XCENTER,YCENTER  :REAL;
+
+(*$IAPPLEDRV.TXT*)              { INCLUDE APPLE GRAPHICS DRIVER }
+
+BEGIN
+
+  NPOINTS     :=60;             { NUMBER OF POINTS IN A DISPLAY }
+  NFRAMES     := 9;             { NUMBER OF FRAMES FOR THIS RUN }
+  STEPSTART   := 0;             { STEP AT THE FIRST FRAME }
+  STEPEND     :=1/60;           { STEP AT THE LAST FRAME }
+  
+  RADIUS      := 85;            { RADIUS }
+  XCENTER     := 140;           { X CENTER }
+  YCENTER     := 96;            { Y CENTER }
+  
+  FOR FRAME:=1 TO NFRAMES DO 
+    BEGIN
+  
+      ERASE;
+      
+      TIME:=( FRAME-1 ) / ( NFRAMES-1 );
+      STEP:= STEPSTART + ( TIME * ( STEPEND - STEPSTART ));
+                                { STEP IN OVERALL CYCLE ( 1=FULL CYCLE ) }
+      
+      FOR POINT:= 1 TO NPOINTS DO 
+        BEGIN
+          A:= 360 * STEP * POINT;
+
+          X:= XCENTER + COS(A*DEG) * (POINT/NPOINTS) * RADIUS ;
+          Y:= YCENTER + SIN(A*DEG) * (POINT/NPOINTS) * RADIUS ;
+
+          DRAWXY( ROUND(X) , ROUND(Y) );
+        END;
+
+      CAMERA(120);              { EXPOSE ONE FRAME }
+      
+    END
+  READLN;                       { WAIT FOR USER RESPONSE }
+  TEXTMODE;                     { RETURN APPLE SYSTEM TO TEXTMODE }
+END.
+

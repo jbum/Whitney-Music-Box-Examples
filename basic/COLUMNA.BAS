@@ -1,0 +1,48 @@
+  PROGRAM COLUMNA;
+{ FIGURE (1) COLUMN A - DIFFERENTIAL POINTS ON A STRAIGHT LINE MODULUS }
+{ COPYRIGHT 5/25/80 BY JOHN WHITNEY - PREPARED BY PAUL ROTHER }
+{ ADAPTED FOR APPLE - II }
+{ TRANSCRIBED FROM THE PRINTED EDITION BY JIM BUMGARDNER 10/2/2011 }
+
+CONST DEG=0.0174533;            { CONVERTS DEGREE TO RADIAN }
+
+VAR TIME,STEP,
+    STEPSTART,STEPEND,
+    X,Y,
+    LENGTH,XLEFT,YBOTTOM  :REAL;
+
+(*$IAPPLEDRV.TXT*)              { INCLUDE APPLE GRAPHICS DRIVER }
+
+BEGIN
+
+  NPOINTS     :=60;             { NUMBER OF POINTS IN A DISPLAY }
+  NFRAMES     := 9;             { NUMBER OF FRAMES FOR THIS RUN }
+  STEPSTART   := 0;             { STEP AT THE FIRST FRAME }
+  STEPEND     :=1/60;           { STEP AT THE LAST FRAME }
+  
+  LENGTH      :=170;            { LENGTH }
+  XLEFT       := 38;            { X LEFT }
+  YBOTTOM     := 18;            { Y BOTTOM }
+  
+  FOR FRAME:=1 TO NFRAMES DO BEGIN
+  
+      ERASE;
+      
+      TIME:=( FRAME-1 ) / ( NFRAMES-1 );
+      STEP:= STEPSTART + ( TIME * ( STEPEND - STEPSTART ));
+                                { STEP IN OVERALL CYCLE ( 1=FULL CYCLE ) }
+      
+      FOR POINT:= 1 TO NPOINTS DO BEGIN
+          X:= XLEFT + LENGTH * POINT/NPOINTS ;
+          Y:= LENGTH * POINT * STEP ;
+          Y:= YBOTTOM + ( ROUND(Y) MOD ROUND(LENGTH) );
+                                { MODULO FUNCTION WITHIN FIELD }
+          DRAWXY( ROUND(X) , ROUND(Y) );
+        END;
+      CAMERA(120);              { EXPOSE ONE FRAME }
+      
+    END
+  READLN;                       { WAIT FOR USER RESPONSE }
+  TEXTMODE;                     { RETURN APPLE SYSTEM TO TEXTMODE }
+END.
+
