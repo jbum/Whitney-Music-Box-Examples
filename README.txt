@@ -62,3 +62,7 @@ processing/
 
 syd/
   Patch for Jim Bumgardner's Syd software synthesizer.
+
+All code licensed under a creative-commons (Attribution-NonCommercial-ShareAlike) 3.0 unported license.
+
+If you'd like to help maintain this code, drop me a note. - jbum
