@@ -1,0 +1,28 @@
+MODS 4
+MOD mOut1 out (676 116 740 180)
+IN mRscore3 -> sig
+OUTPUT 180.0 44100.0 2 0 0 Whitney2Stage.wav
+MOD mRscore2 rscore (199 117 263 181)
+IN mPluck4 -> i1
+RSCO 5
+RSCON p4
+RSCO1 1
+RSCO2 i*p3/p4
+RSCO3 limit(p3/p4,0,5)
+RSCO4 1/20
+RSCO5 20*p4
+MOD mRscore3 rscore (350 117 414 181)
+IN mRscore2 -> i1
+RSCO 5
+RSCON 48
+RSCO1 1
+RSCO2 0
+RSCO3 d
+RSCO4 i+1
+RSCO5 0
+MOD mPluck4 pluck (54 112 118 176)
+PLKI 0
+PLKF p5
+PLKD p3
+PLKA p4
+PLKd 10
