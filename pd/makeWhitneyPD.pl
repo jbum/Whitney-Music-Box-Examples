@@ -96,7 +96,7 @@ sub idxToFreq($)
 }
 
 $lm = 48;                                       # left margin
-$cw = $nbrTines * $voiceWidth + $lm*2;         # canvas width
+$cw = $nbrTines * $voiceWidth + $lm*2;          # canvas width
 $ch = 460;                                      # canvas height
 $cx = int($cw/2);                               # canvas horizontal center
 $cy = int($ch/2);                               # vertical center (unused)
@@ -117,7 +117,7 @@ open (OFILE, ">$ofile") or die "Can't open $ofile for output\n";
 
 print OFILE <<EOT;
 #N canvas 100 100 $cw $ch 10;
-#X text 20 8 Created with makewhitney.pl $myArgs;
+#X text 20 8 Created with makeWhitneyPD.pl $myArgs;
 #X obj $cx 40 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1;
 #X obj $cx 280 *~ $mixDown;
 #X obj $cx2 340 rev3~ 100 92 3000 40;
