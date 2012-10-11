@@ -129,7 +129,7 @@ foreach my $i (0..$nbrTines-1) {
   my $id = $i+1;
   my $noteMetro = $periodSeconds*1000/$id;
   my $yOffset = ($i & 1)? 10 : -10;
-  printf OFILE "#X obj %d %d metro %d;\n", $i*$voiceWidth+$lm,$yOffset+80+sin($i*3.1415/$nbrTines)*30,$noteMetro;
+  printf OFILE "#X obj %d %d metro %f;\n", $i*$voiceWidth+$lm,$yOffset+80+sin($i*3.1415/$nbrTines)*30,$noteMetro;
   printf OFILE "#X obj %d %d bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1 -1;\n", $i*$voiceWidth+$lm,120+sin($i*3.1415/$nbrTines)*30;
   printf OFILE "#X msg %d %d %d %d;\n", $i*$voiceWidth+$lm,$yOffset+160+sin($i*3.1415/$nbrTines)*30,idxToFreq($i),$noteMetro/2;
   printf OFILE "#X obj %d %d %s;\n", $i*$voiceWidth+$lm,$yOffset+200+sin($i*3.1415/$nbrTines)*30,$voiceName;
