@@ -7,7 +7,7 @@
     SynthDef(\chime, { |freq = 440, amp = 0.2, sustain = 1|
 	  var sig;
 	  sig = SinOsc.ar(freq, 0, amp) * EnvGen.kr(Env.perc(0.01, sustain), doneAction: 2);
-	  Out.ar(0, sig ! 2);    // sig ! 2 is the same as [sig, sig]
+	  Out.ar(0, sig ! 2);
     }).add;
 
     // thanks to hjh
@@ -27,3 +27,26 @@
 
 // p.play;
 // p.stop;
+
+// Whitney - Another method - Jim Bumgardner
+(
+{
+n = 48;
+Mix.ar(
+	i = (1..n);
+	SinOsc.ar(
+		55 * (2**(i/12)),
+		mul: EnvGen.kr(
+			Env.perc(0, 1),
+			Impulse.kr(i/180),
+			levelScale: 2/n,
+			timeScale: 180/i
+		)
+	)
+)
+}.scope(1)
+)
+
+// one liner
+play{mean({|i|SinOsc.ar(55*(2**(i/12)),mul:EnvGen.kr(Env.perc(0,180/48),Impulse.kr(i/180)))}!48)!2}
+

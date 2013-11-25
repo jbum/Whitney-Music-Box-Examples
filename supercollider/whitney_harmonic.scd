@@ -15,7 +15,7 @@
       Array.fill(n, { arg i;
         Pbind(
             \instrument, \chime,
-            \freq, 55 * (i + 1),
+            \freq, 20 * (i + 1),
             \amp, 1/n,
             \dur, period / (i + 1),
             \legato, 0.5
@@ -26,3 +26,27 @@
 
 // p.play;
 // p.stop;
+
+
+// Whitney - Another method - Jim Bumgardner
+(
+{
+n = 48;
+Mix.ar(
+	i = (1..n);
+	SinOsc.ar(
+		20*i,
+		mul: EnvGen.kr(
+			Env.perc(0, 1),
+			Impulse.kr(i/180),
+			levelScale: 2/n,
+			timeScale: 180/i
+		)
+	)
+)
+}.scope(1)
+)
+
+// one liner
+play{mean({|i|SinOsc.ar((i+1)*20,mul:EnvGen.kr(Env.perc(0,180/48),Impulse.kr(i/180)))}!48)!2}
+
