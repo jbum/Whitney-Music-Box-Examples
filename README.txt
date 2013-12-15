@@ -60,6 +60,9 @@ processing/
   visuals_only
     Versions which generate visuals only.
 
+pyo/
+  Sample pyo version.
+
 supercollider/
   Sample versions in Supercollider
 
