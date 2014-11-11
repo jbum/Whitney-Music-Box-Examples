@@ -2,6 +2,8 @@ This is a collection of examples of Whitney Music Boxes.  Some of them are purel
 representations of Whitney's "Incremental Drift" concept.  Some use the visual to trigger sounds, and
 some produce sound or sound files, only.
 
+![Whitney Music Box](http://i.imgur.com/cLuvR.gif "Whitney Music Box")
+
 The motion graphics used in these examples was developed and popularized by John Whitney (Sr), who 
 described it in his 1980 book "Digital Harmony". Whitney's book contained example code in the BASIC 
 programming language, written by Paul Rother.
