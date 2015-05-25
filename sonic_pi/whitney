@@ -1,0 +1,17 @@
+# Whitney Music Box on Sonic Pi - David Rees (daveconservatoire.org / @iamdavidrees)
+
+# Whitney Music Box by Jim Bumgardner (krazydad.com/ @jbum)
+
+use_synth :pretty_bell
+define :whitneybox do |note_no, rest_amount, loops|
+  if (loops !=0)
+    live_loop note_no.to_s do
+        play note_no
+        sleep (rest_amount/loops)
+    end
+    whitneybox (note_no-1), rest_amount, (loops-1)
+  end 
+end 
+
+whitneybox 88, 180.0, 48
+    
