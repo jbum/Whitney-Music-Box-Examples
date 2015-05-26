@@ -1,0 +1,27 @@
+# Welcome to Sonic Pi v2.5
+
+# Whitney Harmonic Variation - jbum
+
+# Whitney Music Box on Sonic Pi - David Rees (daveconservatoire.org / @iamdavidrees)
+
+# Whitney Music Box by Jim Bumgardner (krazydad.com/ @jbum)
+
+
+use_synth :beep
+
+define :playf do |freq|
+  play 69+(12*Math.log((freq.to_f/440), 2)), amp:0.25
+end
+
+define :whitneybox do |note_no, rest_amount, loops|
+  if (loops !=0)
+    live_loop note_no.to_s do
+      # play 88-note_no  # chromatic
+      playf 20+20*note_no # harmonics
+      sleep (rest_amount/loops)
+    end
+    whitneybox (note_no+1), rest_amount, (loops-1)
+  end
+end
+
+whitneybox 0, 180.0, 120
