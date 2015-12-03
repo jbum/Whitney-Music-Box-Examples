@@ -1,4 +1,4 @@
-#N canvas 28 729 842 479 10;
+#N canvas 37 833 842 479 10;
 #X declare -lib mrpeach;
 #X declare -path utils;
 #X declare -path utils;
@@ -62,7 +62,7 @@
 #X obj 339 397 +~;
 #X msg 543 153 1 493.88 0.5 1000;
 #X msg 592 186 2 523.25 0.5 1000;
-#X text 374 25 Tested successfully with Processing/Sound and Music/OSC_Send_test
+#X text 374 25 Tested successfully with Processing/whitney_osc_sendonly
 ;
 #X connect 1 0 4 0;
 #X connect 2 0 1 0;
