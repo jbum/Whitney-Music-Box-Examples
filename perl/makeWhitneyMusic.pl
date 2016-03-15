@@ -19,7 +19,7 @@ makeWhitneyMidi [options - please include at least one]
 -rise                rising pitches (k*n % tines)
 -primes              prime numbers
 -nonprimes           non primes
--scale scale         choice of chromatic blues blues2 major minor minorh (default=chromatic)
+-scale scale         choice of chromatic blues blues2 major minor minorh pentatonic (default=chromatic)
 EOT
 
 $ofile = 'o.mid';
@@ -45,7 +45,8 @@ $useScale = 0;
            major => [0,2,4,5,7,9,11],
            lydian => [0,2,4,6,7,9,11],
            minor => [0,2,3,5,7,8,10],
-           minorh => [0,2,3,5,7,8,11]);
+           minorh => [0,2,3,5,7,8,11],
+           pentatonic => [1,3,6,8,10]);
 
 
 @primes = (   2,   3,   5,   7,  11,  13,  17,  19,  23,  29,
@@ -124,12 +125,12 @@ while ($_ = shift)
 }
 
 
-my $fPitch = int(64-$nbrTines/2);
 my $lenScale = 12;
 if ($useScale) {
     $lenScale = scalar(@{$scales{$useScale}});
-    $fPitch = int(64-($nbrTines*12/$lenScale)/2);
 }
+
+my $fPitch = int(64-($nbrTines*12/$lenScale)/2);
 
 sub kToPitch($$)  # n has no effect if rise is not in effect
 {
@@ -143,7 +144,7 @@ sub kToPitch($$)  # n has no effect if rise is not in effect
   }
   if ($rev)
   {
-     return ($fPitch+$nbrTines) - $k;
+     return ($fPitch+$nbrTines*12/$lenScale) - $k;
   }
   if ($rise) {
     return $fPitch + ($k + $k*$n)%$nbrTines;
