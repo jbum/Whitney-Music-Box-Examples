@@ -19,7 +19,7 @@ makeWhitneyMidi [options - please include at least one]
 -rise                rising pitches (k*n % tines)
 -primes              prime numbers
 -nonprimes           non primes
--scale scale         choice of chromatic blues blues2 major minor minorh pentatonic lydian (default=chromatic)
+-scale scale         choice of chromatic blues blues2 major minor minorh pentatonic (default=chromatic)
 EOT
 
 $ofile = 'o.mid';
@@ -187,10 +187,21 @@ sub kToCount($)
 }
 
 
-@myEList = ();
+
+
+
+my $tracks = [MIDI::Track->new({
+  'type' => 'MTrk',
+  'events' => [  # 3 events.
+    ['time_signature', 0, 4, 2, 24, 8],
+    ['key_signature', 0, 0, 0],
+    ['set_tempo', 0, int(1000000*60/$tempo)],  # microseconds per quarter note
+  ]
+})];
 
 foreach $k (0..$nbrTines-1)
 {
+  @myEList = ();
   foreach $n (0..kToCount($k)-1)
   {
     push @myEList, {   t=>kToTime($k,$n),
@@ -200,42 +211,25 @@ foreach $k (0..$nbrTines-1)
                        pitch=>kToPitch($k,$n),
                        vel=>0};
   }
+  $mEventList = [];
+  # proccess here
+  $lTicks = 0;
+  foreach $e (@myEList)
+  {
+    $offset = int($e->{t} - $lTicks);
+    push @{$mEventList}, ['note_on', $offset, 0, int($e->{pitch}), int($e->{vel})];
+    $lTicks += $offset;
+  }
+  # add track here...
+  push @{$tracks}, MIDI::Track->new({
+  'type' => 'MTrk',
+  'events' => $mEventList
+  });
 }
-
-# print Dumper(\@myEList);
-
-
-$lTicks = 0;
-foreach $e (sort {$a->{t} <=> $b->{t}} @myEList)
-{
-  $offset = int($e->{t} - $lTicks);
-  push @{$mEventList}, ['note_on', $offset, 0, int($e->{pitch}), int($e->{vel})];
-  $lTicks += $offset;
-}
-
-# print Dumper($mEventList);
 
 my $op = MIDI::Opus->new({
 'format' => 1,
 'ticks'  => $ticksPerBeat,  # ticks per quarternote
-'tracks' => [   # 2 tracks...
-
-# Track #0 ...
-MIDI::Track->new({
-  'type' => 'MTrk',
-  'events' => [  # 3 events.
-    ['time_signature', 0, 4, 2, 24, 8],
-    ['key_signature', 0, 0, 0],
-    ['set_tempo', 0, int(1000000*60/$tempo)],  # microseconds per quarter note
-  ]
-}),
-
-# Track #1 ...
-MIDI::Track->new({
-  'type' => 'MTrk',
-  'events' => $mEventList
-  }),
-
-]
+'tracks' => $tracks
 });
 $op->write_to_file("$ofile");  
